@@ -1,0 +1,96 @@
+https://themewagon.github.io/kaiadmin-lite/
+
+https://www.csharp.com/article/how-to-implement-jwt-authentication-in-web-api-using-net-6-0-asp-net-core/
+
+USE  MVCTestDb_New;
+CREATE TABLE mstUsers (
+    mstUserId INT PRIMARY KEY IDENTITY(1,1),
+	userName VARCHAR(255) NOT NULL,
+	euid VARCHAR(255) DEFAULT NULL,
+	userTypeId INT DEFAULT 0,
+	userType VARCHAR(255) DEFAULT NULL,
+    userPassword VARCHAR(255) NOT NULL,
+	userEmail VARCHAR(255) NOT NULL,
+	DateOfJoin DATETIME DEFAULT NULL,
+	Experience VARCHAR(255) DEFAULT NULL,
+	usersId VARCHAR(255) DEFAULT NULL,
+    createdBy INT DEFAULT NULL,
+	createdDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updatedBy INT DEFAULT NULL,updatedDate DATETIME DEFAULT NULL,
+	deletdBy INT DEFAULT NULL,deletedDate DATETIME DEFAULT NULL,
+	isActive BIT NOT NULL DEFAULT 1
+);
+CREATE TABLE mstCompany (
+    mstCompanyId INT Identity(1,1) PRIMARY KEY,
+    companyId INT,
+    companyGSTNo VARCHAR(100) NOT NULL,
+    companyName VARCHAR(100) NOT NULL,
+    addressLine1 VARCHAR(255),
+    addressLine2 VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    pinCode INT,
+    createdBy INT,
+    createdDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedBy INT,
+    updatedDate DATETIME,
+    deletdBy INT,
+    deletedDate DATETIME,
+    isActive bit  DEFAULT 1 ,
+    isGST bit  
+);
+CREATE TABLE mstUserType (userTypeId INT PRIMARY KEY,userRole VARCHAR(50) NOT NULL,createdBy INT NULL,
+createdDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,updatedBy INT NULL,updatedDate DATETIME NULL,
+deletdBy INT NULL,deletedDate DATETIME NULL,isActive BIT NOT NULL DEFAULT 1,isDefault BIT NOT NULL DEFAULT 1 );
+
+INSERT INTO mstUserType (userTypeId, userRole, isDefault) VALUES (1, 'SuperAdmin', 0);
+INSERT INTO mstUserType (userTypeId, userRole, isDefault) VALUES (2, 'Admin', 0);
+INSERT INTO mstUserType (userTypeId, userRole, isDefault) VALUES (3, 'Driver', 0);
+INSERT INTO mstUserType (userTypeId, userRole, isDefault) VALUES (4, 'Guest', 1);
+CREATE TABLE mstVehicle (
+    mstVehicleId INT IDENTITY(1,1) PRIMARY KEY,
+    vehicleRegId INT NOT NULL,
+    vehicleRegNo VARCHAR(11) NOT NULL,
+    vehicleName VARCHAR(255),
+    vehiclType VARCHAR(255),
+    weightPassingKg INT,
+    vehicleLength INT,
+    vehicleBreadth INT,
+    chassisNo VARCHAR(255),
+    engineNo VARCHAR(255),
+    purchaseDate DATETIME,
+    fcDate DATETIME,
+    insuranceDate DATETIME,
+    dueDate DATETIME,
+    createdBy INT,
+    createdDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedBy INT,
+    updatedDate DATETIME,
+    deletdBy INT,
+    deletedDate DATETIME,
+    isActive bit DEFAULT '1',
+    isDue bit DEFAULT '1'
+);
+CREATE TABLE mstRentalEntry (
+    mstRentalId INT PRIMARY KEY Identity(1,1) ,
+    rentalDate DATETIME NOT NULL,
+    mstVehicleId INT NOT NULL,
+    mstUserId INT NOT NULL,
+    mstCompanyId INT,
+    rentalDescription VARCHAR(1000),
+    partyName VARCHAR(500),
+    rentalAmount INT NOT NULL,
+    createdBy INT,
+    createdDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedBy INT,
+    updatedDate DATETIME,
+    deletedBy INT,
+    deletedDate DATETIME,
+    isActive bit default 1,
+    isGST bit default 0,
+    isBilled bit default 0,
+    mstInvoiceID INT,
+    billNo INT,
+    isPaid bit default 0
+);
+https://dribbble.com/shots/25223130-Design-Elements-of-the-Delivery-App-Whizzy

@@ -1,0 +1,418 @@
+﻿@{
+    ViewBag.Title = "Vehicle Management";
+    var userSessionId = Context.Session.GetString("userSessionId");
+}
+
+<div class="page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Vehicle Details</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Vehicle</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Vehicle Details</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-md-12">
+        <div>
+            <div class="card-body">
+                <ul class="nav nav-sm nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab-nobd" data-bs-toggle="pill" href="#activeVehicle" role="tab" aria-controls="pills-home-nobd" aria-selected="true">Active List </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-tab-nobd" data-bs-toggle="pill" href="#inactiveVehicle" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">InActive List </a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                    <div class="tab-pane fade show active" id="activeVehicle" role="tabpanel" aria-labelledby="pills-home-tab-nobd">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header d-flex align-items-center">
+                                        <h4 class="card-title">Vehicle Table</h4>
+                                        <button class="btn btn-sm btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#vehicleModal">
+                                            <i class="fa fa-plus"></i> Add Vehicle
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="vehicleTable" class="table table-sm table-bordered table-head-bg-secondary  table-bordered-bd-secondary mt-4 ">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Reg No</th>
+                                                        <th>Name</th>
+                                                        <th>Type</th>
+                                                        <th>FC Date</th>
+                                                        <th>Insurance Date</th>
+                                                        <th>Due Date</th>
+                                                        <th>Status</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="inactiveVehicle" role="tabpanel" aria-labelledby="pills-profile-tab-nobd">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header d-flex align-items-center">
+                                        <h4 class="card-title">Vehicle Table</h4>
+                                        @*  <button class="btn btn-sm btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#vehicleModal">
+                                        <i class="fa fa-plus"></i> Add Vehicle
+                                        </button> *@
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="inactiveVehicleTable" class="table table-sm table-bordered table-head-bg-secondary  table-bordered-bd-secondary mt-4 ">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Reg No</th>
+                                                        <th>Name</th>
+                                                        <th>Type</th>
+                                                        <th>FC Date</th>
+                                                        <th>Insurance Date</th>
+                                                        <th>Due Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Vehicle Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="frmvehicle">
+                    <input type="hidden" id="mstVehicleId" />
+                    <div class="row form-group">
+                        <div class="form-group col-6">
+                            <label>Vehicle Reg No<span class="required-label">*</span></label>
+                            <input type="text" id="vehicleRegNo" name="vehicleRegNo" class="form-control" placeholder="Enter vehicle reg no" required  />
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Vehicle Name<span class="required-label">*</span></label>
+                            <input type="text" id="vehicleName" name="vehicleName" class="form-control" placeholder="Enter vehicle name" required  />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="form-group col-6">
+                            <label>Vehicle Type<span class="required-label">*</span></label>
+                            <input type="text" id="vehiclType" name="vehiclType" class="form-control" placeholder="Enter vehicle type" required  />
+                        </div><div class="form-group col-6">
+                            <label>Vehicle No<span class="required-label">*</span></label>
+                            <input type="number" id="vehicleRegId" name="vehicleRegId" class="form-control" placeholder="Enter vehicle Vehicle Reg Id" readonly required  />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="form-group col-4">
+                            <label>Vehicle Breadth<span class="required-label">*</span></label>
+                            <input type="number" id="vehicleBreadth" name="vehicleBreadth" class="form-control" required />
+                        </div>
+                        <div class="form-group col-4">
+                            <label>Vehicle Lengthe<span class="required-label">*</span></label>
+                            <input type="number" id="vehicleLength" name="vehicleLength" class="form-control" required  />
+                        </div>
+                        <div class="form-group col-4">
+                            <label>Weight Passing (Kg)<span class="required-label">*</span></label>
+                            <input type="number" id="weightPassingKg" name="weightPassingKg" class="form-control" placeholder="Enter weight capacity" required  />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="form-group col-4">
+                            <label>Purchase Date<span class="required-label">*</span></label>
+                            <input type="date" id="purchaseDate" name="purchaseDate" class="form-control" required  />
+                        </div>
+                        <div class="form-group col-4">
+                            <label>FC Date<span class="required-label">*</span></label>
+                            <input type="date" id="fcDate" name="fcDate" class="form-control" required />
+                        </div>
+                        <div class="form-group col-4">
+                            <label>Insurance Date<span class="required-label">*</span></label>
+                            <input type="date" id="insuranceDate" name="insuranceDate" class="form-control" required  />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="form-group col-4">
+                            <label>Due Date<span class="required-label">*</span></label>
+                            <input type="date" id="dueDate" name="dueDate" class="form-control" required  />
+                        </div>
+                        <div class="form-check form-switch col-4 justify-content-center">
+                            <label for="isDue">Due<span class="required-label">*</span></label><br />
+                            <input class="form-check-input" style="height:2em;width: 3.8em;" type="checkbox" role="switch" id="isDue" name="isDue">
+
+                        </div>
+                        @* <div class="form-check form-switch col-4 justify-content-center">
+                        <label for="isActive">Status<span class="required-label">*</span></label><br />
+                        <input class="form-check-input" style="height:2em;width: 3.8em;" type="checkbox" role="switch" id="isActive" name="isActive">
+
+                        </div> *@
+                    </div>
+                    <div class="row form">
+                        <div class="form-group col-6">
+                            <label>Engine No<span class="required-label">*</span></label>
+                            <input type="text" id="engineNo" name="engineNo" class="form-control" required  />
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Chassis No<span class="required-label">*</span></label>
+                            <input type="text" id="chassisNo" name="chassisNo" class="form-control" required  />
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-success" onclick="saveVehicle()" value="Validate">Save</button>
+                <button type="button" class="btn btn-sm btn-secondary cancel" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src=" https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js "></script>
+
+<script type="text/javascript" src=" https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js "> </script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadVehicles();
+        $(".cancel").click(function () {
+            $("#frmvehicle").validate().resetForm();
+            $('#frmvehicle')[0].reset();
+        });
+
+        $("#frmvehicle").validate({
+            rules: {
+                vehicleRegNo: {
+                    required: true,
+                },
+                vehicleName: {
+                    required: true,
+                },
+                vehiclType: {
+                    required: true,
+                },
+                weightPassingKg: {
+                    required: true,
+                },
+                purchaseDate: {
+                    required: true,
+                },
+                fcDate: {
+                    required: true,
+                },
+                purchaseDate: {
+                    required: true,
+                },
+                insuranceDate: {
+                    required: true,
+                }
+
+            }
+        });
+    });
+
+    function loadVehicles() {
+        let activeRows = '';
+        let inactiveRows = ''
+        $.ajax({
+            url: '@Url.Action("GetVehicleList", "Vehicle")',
+            type: 'GET',
+            success: function (data) {
+                var resultdata = data.data;
+                $.each(resultdata, function (i, vehicle) {
+                    let row = '';
+                    row += `<tr>
+                            <td>${vehicle.mstVehicleId}</td>
+                            <td>${vehicle.vehicleRegNo}</td>
+                            <td>${vehicle.vehicleName}</td>
+                            <td>${vehicle.vehiclType}</td>
+                            <td>${moment(vehicle.fcDate).format("DD-MM-YYYY")}</td>
+                            <td>${moment(vehicle.insuranceDate).format("DD-MM-YYYY")}</td>
+                            <td>${moment(vehicle.dueDate).format("DD-MM-YYYY")}</td><td>`;
+
+                    if (vehicle.isActive == true) {
+                        row += ` <button class='btn btn-sm btn-success' onclick='makeInactive(${JSON.stringify(vehicle.vehicleRegNo)})'>Active</button></td><td><button class='btn btn-xs btn-warning' onclick='openEditModal(${JSON.stringify(vehicle)})'><i class='fas fa-pen'></i></button>
+                                    <button class='btn  btn-xs btn-danger' onclick='openDeleteModal(${JSON.stringify(vehicle.vehicleRegNo)})'><i class='fas fa-trash-alt'></i></button>`;
+                    } else if (vehicle.isActive == false) {
+                        row += `<button class='btn btn-sm btn-danger' onclick='makeactive(${JSON.stringify(vehicle.vehicleRegNo)})'>In Active</button> `
+                    }
+                    row += `</td></tr>`;
+
+                    if (vehicle.isActive == true) {
+
+                        activeRows += row; // Add to the Active table
+                    } else if (vehicle.isActive == false) {
+
+                        inactiveRows += row; // Add to the Inactive table
+                    }
+                });
+                $("#vehicleTable").DataTable();
+                $("#inactiveVehicleTable").DataTable();
+                $('#vehicleTable tbody').html(activeRows);
+                $('#inactiveVehicleTable tbody').html(inactiveRows);
+            }
+        });
+    }
+
+    function openCreateModal() {
+        $('#vehicleModal input').val('');
+        $('#vehicleModal').modal('show');
+    }
+
+    function openEditModal(vehicle) {
+        $('#mstVehicleId').val(vehicle.mstVehicleId);
+        $('#vehicleRegId').val(vehicle.vehicleRegNo.slice(-4));
+        $('#vehicleRegNo').val(vehicle.vehicleRegNo);
+        $('#vehicleName').val(vehicle.vehicleName);
+        $('#vehiclType').val(vehicle.vehiclType);
+        $('#vehicleBreadth').val(vehicle.vehicleBreadth);
+        $('#vehicleLength').val(vehicle.vehicleLength);
+        $('#engineNo').val(vehicle.engineNo);
+        $('#chassisNo').val(vehicle.chassisNo);
+        // $('#isActive').prop('checked', vehicle.isActive);
+        $('#isDue').prop('checked', vehicle.isDue);
+        $('#weightPassingKg').val(vehicle.weightPassingKg);
+        $('#purchaseDate').val(vehicle.purchaseDate ? vehicle.purchaseDate.split('T')[0] : '');
+        $('#insuranceDate').val(vehicle.insuranceDate ? vehicle.insuranceDate.split('T')[0] : '');
+        $('#fcDate').val(vehicle.fcDate ? vehicle.fcDate.split('T')[0] : '');
+        $('#dueDate').val(vehicle.dueDate ? vehicle.dueDate.split('T')[0] : '');
+        $('#vehicleModal').modal('show');
+    }
+
+    function saveVehicle() {
+
+        if (!$('#frmvehicle').valid()) {
+            return false;
+        }
+        $('#frmvehicle').validate().resetForm();
+
+        let vehicle = {
+            mstVehicleId: $('#mstVehicleId').val(),
+            vehicleRegNo: $('#vehicleRegNo').val(),
+            vehicleRegId: $('#vehicleRegId').val(),
+            vehicleName: $('#vehicleName').val(),
+            vehiclType: $('#vehiclType').val(),
+            createdBy: @userSessionId,
+            weightPassingKg: $('#weightPassingKg').val(),
+            purchaseDate: $('#purchaseDate').val(),
+            insuranceDate: $('#insuranceDate').val(),
+            dueDate: $('#dueDate').val(),
+            vehicleBreadth: $('#vehicleBreadth').val(),
+            vehicleLength: $('#vehicleLength').val(),
+            fcDate: $('#fcDate').val(),
+            engineNo: $('#engineNo').val(),
+            chassisNo: $('#chassisNo').val(),
+            isdue: $('#isDue').val(),
+            // isActive: $('#isActive').val()
+        };
+        if ($("#frmvehicle").validate()) {
+            $.ajax({
+                url: '@Url.Action("SaveVehicle", "Vehicle")',
+                type: 'POST',
+                data: vehicle,
+                success: function (data) {
+                    alert(data.message);
+                    swal({ title: "Success", text: data.message, type: "success" });
+                    $('#vehicleModal').modal('hide');
+                    $("#frmvehicle").resetForm();
+                    loadVehicles();
+                },
+                error: function (xhr, status, error) {
+                    swal("Error", error, "error");
+                }
+            });
+        }
+    }
+
+    function makeactive(vehicleRegNo) {
+        if (confirm("Are you sure you want to Activate this vehicle?")) {
+            $.ajax({
+                url: '@Url.Action("SaveVehicle", "Vehicle")',
+                type: 'POST',
+                data: { vehicleRegNo: vehicleRegNo },
+                success: function (res) {
+                    swal({ title: "Success", text: response.message, type: "success" });
+                    loadVehicles();
+                },
+                error: function (xhr, status, error) {
+                    swal("Error", error, "error");
+                }
+            });
+        }
+    }
+
+    function makeInactive(vehicleRegNo) {
+        if (confirm("Are you sure you want to InActivate this vehicle?")) {
+            $.ajax({
+                url: '@Url.Action("SaveVehicle", "Vehicle")',
+                type: 'POST',
+                data: { vehicleRegNo: vehicleRegNo, isActive: false },
+                success: function (res) {
+                    swal({ title: "Success", text: response.message, type: "success" });
+                    loadVehicles();
+                },
+                error: function (xhr, status, error) {
+                    swal("Error", error, "error");
+                }
+            });
+        }
+    }
+
+    function openDeleteModal(vehicleRegNo) {
+        if (confirm("Are you sure you want to delete this vehicle?")) {
+            $.ajax({
+                url: '@Url.Action("DeleteVehicle", "Vehicle")',
+                type: 'DELETE',
+                data: { vehicleRegNo: vehicleRegNo },
+                success: function (res) {
+                    swal({ title: "Success", text: response.message, type: "success" });
+                    loadVehicles();
+                }
+            });
+        }
+    }
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.css">

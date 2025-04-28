@@ -1,0 +1,294 @@
+﻿@model Transport_Management.Models.clsInvoiceViewModel;
+@using Transport_Management.Models.Entity;
+@using Transport_Management.Models;
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewBag.Title = "Rental Entry";
+    var userSessionId = Context.Session.GetString("userSessionId");
+    var sno = 1;
+}
+
+
+<div class="page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Invoice</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Invoice</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Invoice Details</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="frmInvoicefilter" asp-action="" data-parsley-validate>
+                            <div class="row form-group">
+                                <div class="form-group col-3">
+                                    <label>From Date<span class="required-label"></span></label>
+                                    <input type="date" id="invioceFromDate" name="invioceFromDate" class="form-control" required data-parsley-errors-container="#invioceFromDate-errors" />
+                                </div>
+                                <div class="form-group col-3">
+                                    <label>To Date<span class="required-label"></span></label>
+                                    <input type="date" id="invioceToDate" name="toDate" class="form-control" required data-parsley-errors-container="#toDate-errors" />
+                                </div>
+                                <div class="form-group col-3">
+                                    <label>Company<span class="text-danger">*</span></label>
+                                    <select class="form-control" name="drpdnCompany" id="drpdnCompany" required data-parsley-errors-container="#drpdnCompany-errors">
+                                        <option value="">-- Select Company --</option>
+                                        @if (Model.lstDrpCompany != null)
+                                        {
+                                            
+                                            @foreach (mstCompany item in Model.lstDrpCompany)
+                                            {
+                                                <option value="@item.mstCompanyId">@item.companyName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3 align-self-center">
+                                    <div class="row align-self-center mx-auto">
+                                        <div class="col-6 align-self-center">
+                                            <button type="submit" class="btn btn-sm btn-primary btn-rounded" id="btnGetReport">Get Report</button>
+                                        </div>
+                                        <div class="col-6 align-self-center">
+                                            <button type="button" class="btn btn-sm btn-warning btn-rounded cancel" id="btnGetReport">Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div>
+            <div class="card-body">
+                <ul class="nav nav-sm nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab-nobd" data-bs-toggle="pill" href="#NotBilledInvoice" role="tab" aria-controls="pills-home-nobd" aria-selected="true">Not Billed Invoice List </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-tab-nobd" data-bs-toggle="pill" href="#BilledInvoice" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">Billed Invoice List </a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                    <div class="tab-pane fade show active" id="NotBilledInvoice" role="tabpanel" aria-labelledby="pills-home-tab-nobd">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-4">
+                                                <h4 class="card-title">Invoice Table</h4>
+                                                </div>
+                                            <div class="col-lg-8">
+
+                                                <button class="btn btn-primary btnGenerateAndSaveBtn pull-right mar-5 btn-common-disable" type="button" onclick="generateInvoice();">Generate Invoice</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="invoicetable" class=" table table-xs table-bordered table-head-bg-secondary  table-bordered-bd-secondary mt-4 ">
+                                                <thead>
+                                                    <tr>
+                                                        <th>S.No.</th>
+                                                        <th class="no-sort">
+                                                            <input type="checkbox" onclick="chkSelectAllButton();" id="checkBoxAllBtn" />
+                                                        </th>
+                                                        <th>ID</th>
+                                                        <th>Company Name</th>
+                                                        <th>Description</th>
+                                                        <th>Date</th>
+                                                        <th>Amount</th>
+                                                        @* <th>Actions</th> *@
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                    @if (Model.lstDrpVehicle != null)
+                                                    {
+                                                        @foreach (mstRentalEntry item in Model.rentalList)
+                                                        {
+                                                            <tr>
+                                                                <td>@sno</td>
+                                                                <td><input type="checkbox" class="chkBoxBtn" value="@item.mstRentalId" /></td>
+                                                                <td>@item.mstRentalId</td>
+                                                                <td>@item.partyName</td>
+                                                                <td>@item.rentalDescription</td>
+                                                                <td>@item.rentalDate</td>
+                                                                <td>@item.rentalAmount</td>
+                                                               @*  <td>
+                                                                    <button type="button" class="btn btn-sm  btn-success" onclick="generateInvoice(@item.mstRentalId)">Generate</button>
+                                                                </td> *@
+                                                            </tr>
+                                                            
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="BilledInvoice" role="tabpanel" aria-labelledby="pills-profile-tab-nobd">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</div>
+<script>
+        $(document).ready(function () {
+            var vNow = new Date();
+            var vDay = ("0" + vNow.getDate()).slice(-2);
+            var vMonth = ("0" + (vNow.getMonth() + 1)).slice(-2);
+            var vYear = vNow.getFullYear();
+            vToday = vNow.getFullYear() + "-" + (vMonth) + "-" + (vDay);
+            vMonthStart = vNow.getFullYear() + "-" + (vMonth) + "-01";
+            $('#invioceFromDate').val(vMonthStart);
+            $('#invioceToDate').val(vToday);
+
+            $(".cancel").click(function () {
+                $("#frmInvoicefilter").validate().resetForm();
+                $('#frmInvoicefilter')[0].reset();
+                $('#invioceFromDate').val(vMonthStart);
+                $('#invioceToDate').val(vToday);
+            });
+            // $('#invioceFromDate').datetimepicker({
+            //     format: 'MM/DD/YYYY',
+            // });
+            $('#invioceFromDate').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            language: 'en',
+            minViewMode: 1,
+            dateFormat: 'dd-mm-yyyy',
+            minDate: new Date(2024, 0, 1),
+            maxDate: vToday
+            });
+            $('#invioceToDate').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            language: 'en',
+            minViewMode: 1,
+            dateFormat: 'dd-mm-yyyy',
+            minDate: new Date(2024, 0, 1),
+            maxDate: vToday
+            });
+
+            //Form Validation
+            $("#frmInvoicefilter").validate({
+                rules: {
+                    invioceFromDate: {
+                        required: function (element) {
+                            if ($("#invioceFromDate").val() != "") {
+                                return true;
+                            }
+                            else {
+                                return false;
+                            }
+                        }
+                    },
+                    invioceToDate: {
+                        endDate: true,
+                        required: function (element) {
+                            if ($("#invioceToDate").val() != "") {
+                                return true;
+                            }
+                            else {
+                                return false;
+                            }
+                        }
+                    },
+                    drpdnCompany: {
+                        required: true
+                    }
+                }
+            });
+            $("#btnGetReport").on("click", function () {
+                debugger;
+                if (!$('#frmRequirementFilter').valid()) {
+                    debugger;
+                    return false;
+                }
+                debugger;
+                $('#frmRequirementFilter').validate().resetForm();
+                var companyId = $('#invioceFromDate').val();
+                var companyId = $('#invioceToDate').val();
+                var companyId = $('#drpdnCompany').val();
+
+            });
+        });
+
+    function generateInvoice() {
+        debugger;
+            $(".btn-common-disable").attr("disabled", true);
+            $("#loader").show();
+            var rentalIds = [];
+
+            $("input.chkBoxBtn:checkbox:checked").each(function () {
+                rentalIds.push($(this).val());
+            });
+            let srentalId = rentalIds.join(',');
+        $.ajax({
+            url: '@Url.Action("GenerateInvoice", "Invoice")',
+            type: 'POST',
+            data: { rentalId:srentalId },
+            success: function (res) {
+                alert(res.message);
+            }
+        });
+    }
+    function chkSelectAllButton() {
+        var isAllBoxChecked = $("#checkBoxAllBtn").is(":checked");
+        $(".chkBoxBtn").prop("checked", isAllBoxChecked);
+        var totalCheckBoxCount = $(".chkBoxBtn").length;
+
+        $("#chkBoxesCount").html(totalCheckBoxCount);
+
+        if (totalCheckBoxCount === 0) {
+            $(".btnGenerateAndSaveBtn").hide();
+        } else {
+            if (isAllBoxChecked == true) {
+                $(".btnGenerateAndSaveBtn").show();
+            } else {
+                $(".btnGenerateAndSaveBtn").hide();
+            }
+        }
+    }
+</script>
+<script src="~/assets/plugins/datepicker/datepicker.min.js"></script>
+<script src="~/assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/assets/plugins/datepicker/i18n/datepicker.en.js"></script>
+<script src="~/assets/plugins/datepicker/datepicker.js"></script>
+<script src="~/assets/plugins/datepicker/timepicker.js"></script>
+<script src="~/assets/plugins/datepicker/datepicker.min.js"></script>
+<link rel="stylesheet" href="~/assets/plugins/datepicker/datepicker.css" />

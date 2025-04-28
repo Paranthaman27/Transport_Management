@@ -1,0 +1,130 @@
+﻿@{
+    Layout = null;
+}
+
+@model Transport_Management.Models.DTO.userDTO
+@using Microsoft.AspNetCore.Http;
+ @{
+    ViewData["Title"] = "Login Page";
+}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>SET Management Systems</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+          name="viewport" />
+    <link rel="icon"
+          href="assets/img/kaiadmin/favicon.ico"
+          type="image/x-icon" />
+
+    <!-- Fonts and icons -->
+    <script src="~/assets/js/plugin/webfont/webfont.min.js"></script>
+
+    <script src="~/assets/js/core/jquery-3.7.1.min.js"></script>
+
+    <script src="~/assets/js/core/popper.min.js"></script>
+    <script src="~/assets/js/core/bootstrap.min.js"></script>
+    <script src="~/assets/js/kaiadmin.min.js"></script>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="~/assets/css/kaiadmin.min.css" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+</head>
+<body class="login bg-secondary-gradient bubble-shadow">
+    <div class="wrapper wrapper-login">
+        <div class="container container-login animated fadeIn ">
+            <h3 class="text-center">Log In</h3>
+
+                <div class="login-form ">
+                    <div class="form-sub">
+                        <div class="form-floating form-floating-custom mb-3">
+                            <input id="userEmail" type="text" class="form-control" placeholder="User Email" required />
+                            <label for="userName">Username</label>
+                        </div>
+                        <div class="form-floating form-floating-custom mb-3">
+                            <input id="userPassword"  type="password" class="form-control" placeholder="Password" required />
+                            <label for="userPassword">Password</label>
+                            <div class="show-password"> <i class="icon-eye"></i> </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-danger error-text" id="loginErrorLabel"></p>
+                    <center><span class="text-danger" id=" serverLoginerror">@ViewBag.vbLoginError</span></center>
+                    <div class="form-action mb-3">
+                        <center><button type="submit" id="btnSubmit" class="btn btn-secondary w-100 btn-login curves-shadow" onclick="fnAuthenticateLogin()">Login</button></center>
+                    </div>
+
+                    <div class="login-account">
+                        <span class="msg">Don't have an account yet ?</span>
+                        <a asp-action="Register" asp-controller="Auth" id="show-signup" class="link">Sign Up</a>
+                    </div>
+                </div>
+
+        </div>
+
+
+    </div>
+
+    <script type="text/javascript">
+        function fnAuthenticateLogin() {
+            debugger
+
+            var email = $("#userEmail").val();
+            var password = $("#userPassword").val();
+            $("#serverLoginerror").html("");
+            $("#loginErrorLabel").html("");
+            if (email == "" || password == "") {
+                $("#loginErrorLabel").html("Please Fill Username or Password");
+            }
+            else if (email != "" && password != "") {
+                let user = {
+                    userEmail: $("#userEmail").val(),
+                    userPassword: $("#userPassword").val()
+                };
+                $.ajax({
+                    type: "GET",
+                    data: user, 
+                    url: '@Url.Action("loginUser", "Auth")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+
+                    success: function (data) {
+                        debugger;
+                        if (data.success == true) {
+                            var result = data.data;
+                            // sessionStorage.setItem("euid", result.euid);
+                            //  $("#serverLoginerror").html("");
+                            $("#loginErrorLabel").html("");
+                            window.location.href = '@Url.Action("Index", "Home")';
+                        } else {
+                            $("#loginErrorLabel").html(data.message);
+                        }
+                    },
+                    error: function (data) {
+                        $("#loginErrorLabel").html("Something Went Wrong!!");
+                    }
+                });
+                //window.location.href = '@Url.Action("Index", "Home")';
+            }
+
+        }
+    </script>
+</body>
+
+<script src="~/assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="~/"></script>
+<script src="~/assets/js/core/popper.min.js"></script>
+<script src="~/assets/js/core/bootstrap.min.js"></script>
+
+
+<!-- Sweet Alert -->
+<script src="~/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<!-- Kaiadmin JS -->
+<script src="~/assets/js/kaiadmin.min.js"></script>
+
+</html>

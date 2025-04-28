@@ -1,0 +1,114 @@
+﻿@{
+    Layout = null;
+}
+@model Transport_Management.Models.Entity.mstUser
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "Register Page";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>SET Management Systems</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+          name="viewport" />
+    <link rel="icon"
+          href="~/assets/img/kaiadmin/favicon.ico"
+          type="image/x-icon" />
+
+    <!-- Fonts and icons -->
+    <script src="~/assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            localStorage.clear();
+        });
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["assets/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = false;
+            },
+        });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="~/assets/css/kaiadmin.min.css" />
+
+</head>
+
+<body class="login">
+    <div class="wrapper wrapper-login wrapper-login-full p-0">
+        <div class="login-aside w-50 d-flex flex-column align-items-center justify-content-center text-center bg-secondary skew-shadow">
+            <h1 class="title fw-bold text-white mb-3">SET Management</h1>
+            <p class="subtitle text-white op-7">Transport management System</p>
+        </div>
+        <div class="login-aside w-50 d-flex align-items-center justify-content-center bg-white">
+
+            <div class="container  container-login animated " style="display: content;">
+                <h3 class="text-center">Register</h3>
+                <form asp-controller="Auth" asp-action="Register" method="post" autocomplete="off" autofill="false">
+                    <div class="row">
+                        @* User Name *@
+                        <div class="form-group">
+                            <label for="userName"><b>User Name</b></label>
+                            <input id="userName" name="userName" type="text" class="form-control" placeholder="User Name" required>
+                            <span id="userName-error" class="text-danger"></span>
+                        </div>
+                        @* User Email *@
+                        <div class="form-group">
+                            <label for="userEmail"><b>User Email</b></label>
+                            <input type="email" Required class="form-control" id="userEmail" name="userEmail" placeholder="Email" maxlength="75">
+                            <span id="userEmail-error" class="text-danger"></span>
+                        </div>
+                        @* Password *@
+                        <div class="form-group">
+                            <label for="userPassword"><b>Password</b></label>
+                            <input type="password" Required class="form-control" id="userPassword" name="userPassword" placeholder="Password">
+                            <span id="userPassword-error" class="text-danger"></span>
+                        </div>
+                        @* Confirm Password *@
+                        @* <div class="form-group">
+                            <label for="cPassword">Confirm Password</label>
+                            <input type="password" Required class="form-control" id="cPassword" placeholder="Password">
+                            <span id="cPassword-error" class="text-danger"></span>
+                        </div> *@
+
+                        <div class="form-group justify-content-center">
+                            <center><button type="submit" id="btnSubmit" class="btn btn-secondary curves-shadow w-100 fw-bold">Register</button></center>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+
+<script src="~/assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="~/assets/js/core/popper.min.js"></script>
+<script src="~/assets/js/core/bootstrap.min.js"></script>
+
+<!-- Sweet Alert -->
+<script src="~/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<!-- Kaiadmin JS -->
+<script src="~/assets/js/kaiadmin.min.js"></script>
+
+</html>

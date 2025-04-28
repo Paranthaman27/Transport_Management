@@ -1,0 +1,345 @@
+﻿@{
+    ViewBag.Title = "Company Management";
+    var userSessionId = Context.Session.GetString("userSessionId");
+}
+<style>
+/*     .parsley-errors-list {
+        list-style: none; /* Removes the bullet point */
+        padding: 0; /* Resets padding */
+        margin: 5px 0 0 0; /* Adds spacing above error text */
+        color: red; /* Keeps the error text in red */
+        font-size: 12px;
+    } */
+</style>
+<div class="page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Company Details</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Company</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Company Details</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-12">
+        <div>
+            <div class="card-body">
+                <ul class="nav nav-sm nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab-nobd" data-bs-toggle="pill" href="#activeCompany" role="tab" aria-controls="pills-home-nobd" aria-selected="true">Active List </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-tab-nobd" data-bs-toggle="pill" href="#inactiveCompany" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">InActive List </a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                    <div class="tab-pane fade show active" id="activeCompany" role="tabpanel" aria-labelledby="pills-home-tab-nobd">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="d-flex align-items-center">
+                                            <h4 class="card-title">Company Table</h4>
+                                            <button class="btn  btn-sm btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#companyModal"> <i class="fa fa-plus"></i> Add Company</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="companyTable" class=" table table-xs table-bordered table-head-bg-secondary  table-bordered-bd-secondary mt-4 ">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Name</th>
+                                                        <th>AddressLine1</th>
+                                                        <th>AddressLine2</th>
+                                                        <th>State</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="inactiveCompany" role="tabpanel" aria-labelledby="pills-profile-tab-nobd">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal fade" id="companyModal" tabindex="-1" role="dialog"
+     aria-labelledby="companyModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="companyModalLabel">
+                    Company Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="companyForm">
+                    <input type="hidden" id="mstCompanyId" />
+                    <div class="row form-group">
+                        <div class="form-group col-3">
+                            <label>Company ID</label>
+                            <input type="number" id="companyId" name="companyId" class="form-control" placeholder="Company ID" required  />
+                        </div>
+
+                        <div class="form-group col-9">
+                            <label>Company Name</label>
+                            <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>GST No</label>
+                        <input type="text" id="companyGSTNo" name="companyGSTNo" class="form-control" placeholder="Enter GST Number" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address Line 1</label>
+                        <input type="text" id="addressLine1" name="addressLine1" class="form-control" placeholder="Enter address" required  />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address Line 2</label>
+                        <input type="text" id="addressLine2" name="addressLine2" class="form-control" placeholder="Enter address" required  />
+                    </div>
+                    <div class="row form-group">
+                        <div class="form-group col-9">
+                            <label>City</label>
+                            <input type="text" id="city" name="city" class="form-control" placeholder="Enter city" required  />
+                        </div>
+                        <div class="form-group col-3">
+                            <label>Is GST</label>
+                            <select id="isGST" name="isGST" class="form-control" required >
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="form-group col-9">
+                            <label>State</label>
+                            <input type="text" id="state" name="state" class="form-control" placeholder="Enter state" required  />
+                        </div>
+                        <div class="form-group col-3">
+                            <label>Pin Code</label>
+                            <input type="number" id="pinCode" name="pinCode" class="form-control" placeholder="Enter pin code" required d />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-sm btn-success" onclick="saveCompany()">Save</button>
+                        <button type="button" class="btn btn-sm btn-secondary cancel" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this company?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn btn-danger" onclick="confirmDelete()">Delete</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.css">
+<script type="text/javascript" src=" https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js "></script>
+
+<script type="text/javascript" src=" https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js "> </script>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#companyTable").DataTable({});
+
+        loadCompanies();
+
+        $(".cancel").click(function () {
+            $("#companyForm").validate().resetForm();
+            $('#companyForm')[0].reset();
+        });
+
+        $("#companyForm").validate({
+            rules: {
+                companyName: {
+                    required: true,
+                },
+                companyId: {
+                    required: true,
+                },
+                companyGSTNo: {
+                    required: true,
+                },
+                addressLine1: {
+                    required: true,
+                },
+                city: {
+                    required: true,
+                },
+                state: {
+                    required: true,
+                },
+                pinCode: {
+                    required: true,
+                },
+                addressLine2: {
+                    required: true,
+                },
+                insuranceDate: {
+                    required: true,
+                }
+
+            }
+        });
+
+    });
+
+    function loadCompanies() {
+        debugger;
+        $.ajax({
+            url: '@Url.Action("GetCompanyList", "Company")',
+            type: 'GET',
+            success: function (data) {
+                let rows = '';
+                var resultdata = data.data;
+                $.each(resultdata, function (i, company) {
+                    rows += `<tr>
+                                                    <td>${company.mstCompanyId}</td>
+                                                    <td>${company.companyName}</td>
+                                                    <td>${company.addressLine1}</td>
+                                                    <td>${company.addressLine2}</td>
+                                                    <td>${company.state}</td>
+                                                    <td>
+                                                                    <button class='btn  btn-xs btn-warning' onclick='openEditModal(${JSON.stringify(company)})'><i class='fas fa-pen'></i></button>
+                                                                    <button class='btn btn-xs btn-danger ' onclick='openDeleteModal(${company.mstCompanyId})'><i class='fas fa-trash-alt'></i></button>
+                                                    </td>
+                                                 </tr>`;
+                });
+
+                $('#companyTable tbody').html(rows);
+            }
+        });
+    }
+
+    function openCreateModal() {
+        $('#companyModal input, #companyModal select').val('');
+        $('#companyModal').modal('show');
+    }
+
+    function openEditModal(company) {
+        $('#mstCompanyId').val(company.mstCompanyId);
+        $('#companyId').val(company.companyId);
+        $('#companyGSTNo').val(company.companyGSTNo);
+        $('#companyName').val(company.companyName);
+        $('#addressLine1').val(company.addressLine1);
+        $('#addressLine2').val(company.addressLine2);
+        $('#city').val(company.city);
+        $('#state').val(company.state);
+        $('#pinCode').val(company.pinCode);
+        $('#createdBy').val("@userSessionId");
+        $('#updatedBy').val(company.updatedBy);
+        $('#deletedBy').val(company.deletdBy);
+        $('#isActive').val(company.isActive.toString());
+        $('#isGST').val(company.isGST.toString());
+
+        $('#companyModal').modal('show');
+    }
+
+    function saveCompany() {
+        debugger;
+        if (!$('#companyForm').valid()) {
+            return false;
+        }
+        $('#companyForm').validate().resetForm();
+
+        let company = {
+            mstCompanyId: $('#mstCompanyId').val(),
+            companyId: $('#companyId').val(),
+            companyGSTNo: $('#companyGSTNo').val(),
+            companyName: $('#companyName').val(),
+            addressLine1: $('#addressLine1').val(),
+            addressLine2: $('#addressLine2').val(),
+            city: $('#city').val(),
+            state: $('#state').val(),
+            pinCode: $('#pinCode').val(),
+            createdBy: $('#createdBy').val(),
+            updatedBy: $('#updatedBy').val(),
+            deletdBy: $('#deletedBy').val(),
+            isGST: $('#isGST').val() === "true"
+        };
+        if ($("#companyForm").validate()) {
+            $.ajax({
+                url: '@Url.Action("SaveCompany", "Company")',
+                type: 'POST',
+                data: company,
+                success: function (res) {
+                    alert(res.message);
+
+                    $('#companyModal').modal('hide');
+                    loadCompanies();
+                }
+            });
+        
+        }
+    }
+
+    function openDeleteModal(id) {
+        $('#deleteModal').modal('show');
+        $('#deleteModal').data('id', id);
+    }
+
+    function confirmDelete() {
+        let id = $('#deleteModal').data('id');
+        $.ajax({
+            url: '@Url.Action("DeleteCompany", "Company")',
+            type: 'DELETE',
+            data: { id: id },
+            success: function (res) {
+                alert(res.message);
+                $('#deleteModal').modal('hide');
+                loadCompanies();
+            }
+        });
+    }
+</script>

@@ -1,0 +1,538 @@
+﻿@model Transport_Management.Models.clsRentalViewModel;
+@using Transport_Management.Models.DTO;
+@using Transport_Management.Models.Entity;
+@using Transport_Management.Models;
+@using Microsoft.AspNetCore.Http;
+@{
+	ViewBag.Title = "Rental Entry";
+	var userSessionId = Context.Session.GetString("userSessionId");
+}
+
+
+
+<div class="page-inner">
+	<div class="page-header">
+		<h3 class="fw-bold mb-3">Rental Entry</h3>
+		<ul class="breadcrumbs mb-3">
+			<li class="nav-home">
+				<a href="#">
+					<i class="icon-home"></i>
+				</a>
+			</li>
+			<li class="separator">
+				<i class="icon-arrow-right"></i>
+			</li>
+			<li class="nav-item">
+				<a href="#">Rental</a>
+			</li>
+			<li class="separator">
+				<i class="icon-arrow-right"></i>
+			</li>
+			<li class="nav-item">
+				<a href="#">Rental Details</a>
+			</li>
+		</ul>
+	</div>
+
+
+	<div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-body">
+						<form id="frmInvoicefilter" data-parsley-validate>
+							<div class="row form-group">
+								<div class="form-group col-3">
+									<label>From Date<span class="required-label"></span></label>
+									<input type="date" id="invioceFromDate" name="invioceFromDate" class="form-control" required data-parsley-errors-container="#invioceFromDate-errors" />
+								</div>
+								<div class="form-group col-3">
+									<label>To Date<span class="required-label"></span></label>
+									<input type="date" id="invioceToDate" name="toDate" class="form-control" required data-parsley-errors-container="#toDate-errors" />
+								</div>
+								<div class="form-group col-3">
+									<label>Company<span class="text-danger">*</span></label>
+									<select class="form-control" name="drpdnCompany" id="drpdnCompany" required data-parsley-errors-container="#drpdnCompany-errors">
+										<option value="">-- Select Company --</option>
+										@if (Model.lstDrpCompany != null)
+										{
+											<option value="0">All</option>
+											@foreach (mstCompany item in Model.lstDrpCompany)
+											{
+												<option value="@item.mstCompanyId">@item.companyName</option>
+											}
+										}
+									</select>
+								</div>
+								<div class="form-group col-md-3 align-self-center">
+									<div class="row align-self-center mx-auto">
+										<div class="col-6 align-self-center">
+											<button type="submit" class="btn btn-sm btn-primary btn-rounded" id="btnGetReport" onclick="filterRental()">Get Report</button>
+										</div>
+										<div class="col-6 align-self-center">
+											<button type="button" class="btn btn-sm btn-warning btn-rounded cancel" id="btnGetReport">Reset</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12">
+		<div>
+			<div class="card-body">
+				<ul class="nav nav-sm nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" id="pills-home-tab-nobd" data-bs-toggle="pill" href="#NotBilledRentalEntry" role="tab" aria-controls="pills-home-nobd" aria-selected="true">Not Billed Rental List </a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="pills-profile-tab-nobd" data-bs-toggle="pill" href="#BilledRentalEntry" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">Billed Rental List </a>
+					</li>
+				</ul>
+				<div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+					<div class="tab-pane fade show active" id="NotBilledRentalEntry" role="tabpanel" aria-labelledby="pills-home-tab-nobd">
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="d-flex align-items-center">
+											<h4 class="card-title">Rental Table</h4>
+											<button class="btn btn-sm  btn-primary btn-round ms-auto" data-bs-toggle="modal" onclick="openCreateModal()"> <i class="fa fa-plus"></i> Add Rental</button>
+										</div>
+									</div>
+									<div class="card-body">
+										@* <div class="row upload">
+											<div class="col-md-4 col-sm-4 col-lg-4">
+												<input id="invoiceFile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+											</div>
+											<div class="col-md-8 col-sm-8 col-lg-8">
+												<button class="btn btn-success pull-right" id="invoiceExcelDownBtn" onclick="fnDownloadInvoiceSampleExcel();"><i class="fa fa-download"></i>&nbsp;Sample Excel</button>
+											</div>
+										</div>
+										<br />
+										<div class="ibox-content uploadButton">
+											<button class="btn btn-info" onclick="clearInvoiceFiles();" type="button">
+												<i class="fa fa-eraser"></i>Clear
+											</button>
+											<button class="btn btn-primary" id="invoiceSaveBtn" type="button" onclick="saveInvoiceFile();">
+												<i class="fa fa-check"></i>&nbsp;Save
+											</button>
+											<span>Total Record Found : </span><span id="totalRowsCount">0</span>
+										</div>
+										</br> *@
+										<div class="table-responsive">
+											<table id="RentalTable" class=" table table-xs table-bordered table-head-bg-secondary  table-bordered-bd-secondary mt-4 ">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Company Name</th>
+														<th>Description</th>
+														<th>Date</th>
+														<th>Amount</th>
+														<th>Actions</th>
+													</tr>
+												</thead>
+												<tbody></tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="BilledRentalEntry" role="tabpanel" aria-labelledby="pills-profile-tab-nobd">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+
+
+
+
+<!-- Create/Edit Modal -->
+<div class="modal fade" id="RentalModal" tabindex="-1" role="dialog"
+	 aria-labelledby="RentalModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title fw-bold" id="RentalModalLabel">
+					Rental Details
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"></span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="frmrental">
+					<input type="hidden" id="mstRentalId" />
+					<div class="row form-group">
+						<div class="form-group col-3">
+							<label>Rental ID</label>
+							<input type="number" id="RentalId" class="form-control" placeholder="Rental ID" />
+						</div>
+
+						<div class="form-group col-9">
+							<label>Rental Name</label>
+							<input type="text" id="RentalName" class="form-control" placeholder="Enter Rental name" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label>Rental Description</label>
+						<input type="text" id="rentalDescription" class="form-control" placeholder="Enter Rental Description" />
+					</div>
+
+					<div class="form-group">
+						<label>Party Name</label>
+						<input type="text" id="partyName" class="form-control" placeholder="Enter Party Name" />
+					</div>
+
+					<div class="form-group">
+						<label>Rental Amount</label>
+						<input type="number" id="rentalAmount" class="form-control" placeholder="Enter Rental Amount" />
+					</div>
+					<div class="row form-group">
+
+						<div class="form-group col-4">
+							<label>Is GST</label>
+							<select id="isGST" class="form-control">
+								<option value="true">Yes</option>
+								<option value="false">No</option>
+							</select>
+						</div>
+						<div class="form-group col-6">
+							<label>Rental Date</label>
+							<div class="input-group">
+								<input type="date" class="form-control" id="rentalDate" name="rentalDate">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label>Vehicle<span class="text-danger">*</span></label>
+						<select class="form-control" name="vehicleId" id="drpdnvehicle">
+							<option value="">-- Select Vehicle --</option>
+							@if (Model.lstDrpVehicle != null)
+							{
+								<option value="-1">Unknown</option>
+								@foreach (mstVehicle item in Model.lstDrpVehicle)
+								{
+									<option value="@item.mstVehicleId">@item.vehicleRegNo</option>
+								}
+							}
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Company<span class="text-danger">*</span></label>
+						<select class="form-control" name="companyId" id="drpdnCompany">
+							<option value="">-- Select Tester --</option>
+							@if (Model.lstDrpCompany != null)
+							{
+								<option value="-1">Unknown</option>
+								@foreach (mstCompany item in Model.lstDrpCompany)
+								{
+									<option value="@item.mstCompanyId">@item.companyName</option>
+								}
+							}
+						</select>
+					</div>
+
+
+
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm  btn-success" onclick="saveRental()">Save</button>
+				<button type="button" class="btn btn-sm  btn-secondary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-danger text-white">
+				<h5 class="modal-title">Confirm Deletion</h5>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete this Rental?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm  btn-danger" onclick="confirmDelete()">Delete</button>
+				<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+		$(document).ready(function () {
+			// Set default values for filters
+		var now = new Date();
+		var startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+		$("#invioceFromDate").val(formatDate(startOfMonth));
+		$("#invioceToDate").val(formatDate(now));
+		$("#drpdnCompany").val("0");
+
+			$("#RentalTable").DataTable({});
+			getRental();
+			$('#rentalDate').datetimepicker({
+				format: 'MM/DD/YYYY',
+			});
+		$(".cancel").click(function () {
+			$("#frmrental").validate().resetForm();
+			$('#frmrental')[0].reset();
+		});
+
+		$("#frmrental").validate({
+			rules: {
+				RentalId: {
+					required: true,
+				},
+				RentalGSTNo: {
+					required: true,
+				},
+				RentalName: {
+					required: true,
+				},
+				drpdnvehicle: {
+					required: true,
+				},
+				drpdnCompany: {
+					required: true,
+				},
+				partyName: {
+					required: true,
+				},
+				rentalDescription: {
+					required: true,
+				},
+				rentalDate: {
+					required: true,
+				},
+				rentalAmount: {
+					required: true,
+				},
+				rentalAmount: {
+					required: true,
+				}
+
+			}
+		});
+		});
+
+		 $("#frmInvoicefilter .cancel").click(function(){
+			 $("#frmInvoicefilter").validate().resetForm();
+			$("#frmInvoicefilter")[0].reset();
+		});
+		$("#frmrental").validate({
+		rules: {
+			invioceFromDate: {
+				required: true,
+			},
+			invioceToDate: {
+				required: true,
+			},
+			drpdnCompany: {
+				required: true,
+			}
+		}
+		});
+		function getRental(){
+			$.ajax({
+				url: '@Url.Action("GetRentalList", "Rental")',
+				type: 'GET',
+				success: function (data) {
+
+					var resultdata = data.data;
+				loadRentalTable(resultdata);
+				}
+			});
+
+		}
+		function loadRentalTable(resultdata) {
+		$('#RentalTable tbody').html("");
+			let rows = '';
+			$.each(resultdata, function (i, Rental) {
+				rows += `<tr>
+							<td>${Rental.mstRentalId}</td>
+							<td>${Rental.partyName}</td>
+							<td>${Rental.rentalDescription}</td>
+							<td>${moment(Rental.rentalDate).format("DD-MM-YYYY")} </td>
+							<td>${Rental.rentalAmount}</td>
+							<td>
+								<button class='btn  btn-xs btn-warning' onclick='openEditModal(${JSON.stringify(Rental)})'><i class='fas fa-pen'></i></button>
+								<button class='btn btn-xs btn-danger ' onclick='openDeleteModal(${Rental.mstRentalId})'><i class='fas fa-trash-alt'></i></button>
+							</td>
+							</tr>`;
+			});
+			$('#RentalTable tbody').html(rows);
+		}
+
+
+		function openCreateModal() {
+			$('#RentalModal input, #RentalModal select').val('');
+			$('#RentalModal').modal('show');
+		}
+
+		function openEditModal(Rental) {
+			$('#mstRentalId').val(Rental.mstRentalId);
+			$('#RentalId').val(Rental.RentalId);
+			$('#RentalGSTNo').val(Rental.RentalGSTNo);
+			$('#RentalName').val(Rental.RentalName);
+			$('#createdBy').val(Rental.createdBy);
+			$('#updatedBy').val(Rental.updatedBy);
+			$('#deletedBy').val(Rental.deletdBy);
+			$('#isActive').val(Rental.isActive.toString());
+			$('#isGST').val(Rental.isGST.toString());
+
+			$('#RentalModal').modal('show');
+		}
+
+		function saveRental() {
+		debugger;
+
+		if (!$('#frmrental').valid()) {
+			return false;
+		}
+		$('#frmrental').validate().resetForm();
+
+			let Rental = {
+				mstRentalId: $('#mstRentalId').val(),
+				rentalId: $('#RentalId').val(),
+				rentalDate: $('#rentalDate').val(),
+				mstVehicleId: $('#drpdnvehicle').val(),
+				mstUserId: @userSessionId,
+				createdBy: @userSessionId,
+				mstCompanyId: $('#drpdnCompany').val(),
+				rentalDescription: $('#rentalDescription').val(),
+				partyName: $('#partyName').val(),
+				rentalAmount: $('#rentalAmount').val(),
+				isGST: $('#isGST').val() != "" ? $('#isGST').val() : "true",
+				rentalName: $('#RentalName').val()
+			};
+		if ($("#frmrental").validate()) {
+			$.ajax({
+				url: '@Url.Action("SaveRental", "Rental")',
+				type: 'POST',
+				data: Rental,
+				success: function (res) {
+					alert(res.message);
+					$('#RentalModal').modal('hide');
+				getRental();
+				}
+
+			});
+		}
+		}
+
+	 function filterRental() {
+		debugger;
+
+	if (!$('#frmInvoicefilter').valid()) {
+		return false;
+	}
+
+
+		var fromDate = $("#invioceFromDate").val();
+		var toDate = $("#invioceToDate").val();
+		var companyId = $("#drpdnCompany").val();
+		if ($("#frmInvoicefilter").validate()) {
+		$.ajax({
+				url: '@Url.Action("GetFilteredRentals", "Rental")',
+				type: "GET",
+				data: {fromDate: fromDate,toDate: toDate,companyId: companyId},
+				success: function (data) {
+					// Handle successful response (e.g., display data in a table)
+					if (data.success) {
+						loadRentalTable(data.data); // Log the data to the console
+						// Example: populate a table with the returned data
+						populateInvoiceTable(data.data);
+					} else {
+						alert(data.message); // Display error message
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					// Handle error
+					console.error("AJAX Error:", textStatus, errorThrown);
+					alert("An error occurred while fetching data.");
+				}
+			});
+			}
+		$('#frmInvoicefilter').validate().resetForm();
+		}
+
+		function openDeleteModal(id) {
+			$('#deleteModal').modal('show');
+			$('#deleteModal').data('id', id);
+		}
+
+		function confirmDelete() {
+			let id = $('#deleteModal').data('id');
+			$.ajax({
+				url: '@Url.Action("DeleteRental", "Rental")',
+				type: 'DELETE',
+				data: { id: id },
+				success: function (res) {
+					alert(res.message);
+					$('#deleteModal').modal('hide');
+					getRental();
+				}
+			});
+		}
+
+		function fnLoadDrpVehicle() {
+			debugger;
+			var vehicleDrpDown = $("#drpdnvehicle").val();
+			if (vehicleDrpDown != "") {
+				$.ajax({
+					type: "GET",
+					url: "@Url.Action("GetVehicleList", "Vehicle")",
+					success: function (response) {
+						if (response.status == true) {
+							var vData = response.data;
+							var vObjLen = vData.length;
+							if (vObjLen > 0) {
+								var vOptions = '<option value="0">All</option>';
+								for (var i = 0; i < vData.length; i++) {
+									vOptions += '<option value="' + vData[i].mstVehicleId + '">' + vData[i].vehicleRegNo + '</option>';
+								}
+							}
+							else {
+								var vOptions = '<option value="0">--</option>';
+							}
+						}
+						else {
+							swal("Warning", data.message, "warning");
+						}
+
+					},
+					error: function (xhr, status, error) {
+						swal("Error", error, "error");
+					}
+				});
+			}
+			else {
+				var vOptions = '<option value="">Select Sub Project</option>';
+				$("#drpdnvehicle").html(vOptions);
+				$("#drpdnvehicle").val("").trigger("change");
+			}
+		}
+
+
+</script>
+

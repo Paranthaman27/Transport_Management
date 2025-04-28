@@ -1,0 +1,49 @@
+﻿@model Transport_Management.Models.clsRentalViewModel
+@using Transport_Management.Models.Entity
+@* @model List<Transport_Management.Models.Entity.mstRentalEntry>; *@
+
+<div class="table-responsive">
+
+    <table id="RentalTable" class=" table table-xs table-bordered table-head-bg-secondary  table-bordered-bd-secondary mt-4 ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Company Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                @foreach (mstRentalEntry rental in Model.lstrentalEntry)
+                {
+                    <tr>
+                        <td>@rental.mstRentalId</td>
+                        <td>@rental.partyName</td>
+                        <td>@rental.rentalDescription</td>
+                        <td>@rental.rentalDate.ToString("dd-MM-yyyy")</td>
+                        <td>@rental.rentalAmount</td>
+                        <td>
+                            <button class="btn btn-xs btn-warning" onclick="openEditModal(@rental.mstRentalId, @rental.rentalDate, @rental.rentalDescription, @rental.partyName, @rental.rentalAmount, @rental.isGST, @rental.mstVehicleId, @rental.mstCompanyId)">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <button class="btn btn-xs btn-danger" onclick="openDeleteModal(@rental.mstRentalId)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No rental entries found.</td>
+                </tr>
+            }
+    </tbody>
+</table>
+
+</div>
